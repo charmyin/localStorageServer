@@ -4,18 +4,24 @@ var router = express.Router();
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 
+var rootpath = '/home/ubuntu/morespace/uploadedImage/';
+
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'D:\\images')
+    //#cb(null, 'D:\\images')
+    cb(null, rootpath)
   },
   filename: function (req, file, cb) {	
 	var nowTime = new Date();
+	console.log(req.body.serialNumber)
+	console.log(file)
 	var relativeFileDir = req.body.serialNumber+"/"+nowTime.getMonth()+"_"+nowTime.getDate();
-	var fileDir = "D:/images/"+relativeFileDir;
-	  if (!fs.existsSync(fileDir)){
-			mkdirp.sync(fileDir);
-		}
-    cb(null, relativeFileDir+'/' + Date.now()+"."+file.mimetype.split("/")[1]);
+	var fileDir = rootpath+relativeFileDir;
+	console.log(fileDir)
+        if (!fs.existsSync(fileDir)){
+          mkdirp.sync(fileDir);
+       	}
+        cb(null, relativeFileDir+'/' + Date.now()+"."+file.mimetype.split("/")[1]);
   }
 })
 var upload = multer({ storage: storage })
